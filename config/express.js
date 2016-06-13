@@ -17,26 +17,27 @@
 'use strict';
 
 // Module dependencies
-var express    = require('express'),
-  bodyParser   = require('body-parser'),
-  compression  = require('compression');
+var express = require('express');
+var bodyParser = require('body-parser');
+var compression = require('compression');
+var path = require('path');
 
-module.exports = function (app) {
-  // Only loaded when SECURE_EXPRESS is `true`
-  if (process.env.SECURE_EXPRESS)
+module.exports = function(app) {
+  app.enable('trust proxy');
+
+  // Only loaded when running in Bluemix
+  if (process.env.VCAP_APPLICATION) {
     require('./security')(app);
-
+  }
   // Configure Express
-  app.use(bodyParser.urlencoded({ extended: true}));
-  app.use(bodyParser.json({ }));
-
-  // Pretty print JSON
-  app.set('json spaces', 2);
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json({}));
+  app.set('view engine', 'ejs');
+  require('ejs').delimiter = '$';
 
   // compress all requests
   app.use(compression());
 
   // Setup static public directory
-  app.use(express.static(__dirname + '/../public'));
-
+  app.use(express.static(path.join(__dirname, '../public')));
 };

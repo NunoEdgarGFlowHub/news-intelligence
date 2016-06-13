@@ -1,12 +1,12 @@
+/* eslint one-var: "off" */
+/* global browserInfo:true */
+
 (function(app) {
   'use strict';
   app.SentimentLineChart = function(dom, args) {
-
     this.domNode = dom;
-
     this.sentiments = args.sentiments;
     this.model = args.model;
-
     this._setup();
   };
 
@@ -21,8 +21,6 @@
   };
 
   app.SentimentLineChart.prototype._setup = function() {
-
-
     var margin = {
         top: 20,
         right: 50,
@@ -34,8 +32,7 @@
       width = chartWidth - margin.left - margin.right,
       height = chartHeight - margin.top - margin.bottom;
 
-
-    //format the data
+    // format the data
     var results = [{
       name: 'Positive',
       className: 'positive',
@@ -53,7 +50,7 @@
     var minTime = this.model.start + 1,
       maxTime = this.model.end,
       updateDate = this.model.updateDate;
-    //assign a date to each entry
+    // assign a date to each entry
     results.forEach(function(sentiment) {
       if (sentiment.values) {
         var time = minTime;
@@ -71,15 +68,12 @@
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', '0 0 ' + chartWidth + ' ' + chartHeight)
       .attr('height', function() {
-        if (browserInfo.search('ie') !== -1)
-          return '300';
-        else
-          return '100%';
+        return browserInfo.search('ie') !== -1 ? '300' : '100%';
       })
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    //create the scales
+    // create the scales
 
     var x = d3.scale.linear()
       .range([0, width]);
@@ -102,7 +96,7 @@
       })
     ]);
 
-    //build the axes
+    // build the axes
     this._drawXAxis(x, updateDate, height);
     this._drawYAxis(y);
 
@@ -121,12 +115,9 @@
     var circleRadius = 5;
     this._drawLinePoints(sentiment, x, y, circleRadius);
     this._drawLegends(results, chartHeight, circleRadius, sentimentClassFunc);
-
-
   };
 
   app.SentimentLineChart.prototype._drawXAxis = function(x, updateDate, height) {
-
     var domainArr = x.domain(),
       maxDays = -domainArr[0],
       noOfMajorXTicks = 5,
@@ -156,10 +147,10 @@
     xAxisLine.selectAll('line')
       .attr('y1', 10);
 
-    //minor ticks
+    // minor ticks
     xAxisLine.selectAll('line').data(x.ticks(noOfMinorTicks), function(d) {
-        return d;
-      })
+      return d;
+    })
       .enter()
       .append('line')
       .attr('y1', 10)
@@ -187,12 +178,10 @@
       .classed('y-axis-label', true)
       .style('text-anchor', 'end')
       .text('mentions');
-
   };
 
   app.SentimentLineChart.prototype._drawLinePoints = function(sentiment, x, y, circleRadius) {
-
-    //create tooltip
+    // create tooltip
     var tooltip = d3.select(this.domNode).append('div')
       .classed('sentimentTimeLineChart-tooltip', true)
       .style('display', 'none')
@@ -220,7 +209,6 @@
         d3.select(this).classed(d.className, true);
       })
       .on('mouseover', function(d) {
-
         tooltip.style('left', (d3.event.pageX - 20) + 'px')
           .style('top', (d3.event.pageY - 60) + 'px')
           .classed(d3.select(this.parentNode).datum().tooltipClassName, true)
@@ -229,8 +217,6 @@
           .duration(tooltipTransition)
           .style('opacity', '1')
           .style('display', 'block');
-
-
       })
       .on('mouseout', function() {
         tooltip.transition()
@@ -239,13 +225,9 @@
           .style('display', 'none');
         tooltip.classed(d3.select(this.parentNode).datum().tooltipClassName, false);
       });
-
-
-
   };
 
   app.SentimentLineChart.prototype._drawLines = function(sentiment, x, y, sentimentClassFunc) {
-
     var line = d3.svg.line()
       .x(function(d) {
         return x(d.time);
@@ -260,12 +242,11 @@
         return line(d.values);
       })
       .each(sentimentClassFunc);
-
   };
 
   app.SentimentLineChart.prototype._drawLegends =
     function(results, chartHeight, circleRadius, sentimentClassFunc) {
-      //create the legends
+      // create the legends
       var legend = this._svg.selectAll('.legend')
         .data(results)
         .enter().append('g')
@@ -273,7 +254,7 @@
         .attr('transform', 'translate(0,' + (chartHeight - 30) + ')');
 
       var circleLocationFunc = function(d, i) {
-        //TODO: Calculate the width of the previous text and use it here
+        // TODO: Calculate the width of the previous text and use it here
         return i * (circleRadius + 120);
       };
 
@@ -301,6 +282,4 @@
     this._svg.remove();
     this.domNode.remove();
   };
-
-
 })(window.app || (window.app = {}));

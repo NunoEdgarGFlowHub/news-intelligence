@@ -1,10 +1,10 @@
+/* eslint one-var: "off" */
+
 (function(app) {
   'use strict';
   app.TopSourceBoxes = function(dom, args) {
     this.domNode = dom;
-
     this.topSources = args.topSources;
-
     this._setup();
   };
 
@@ -14,11 +14,9 @@
   };
 
   app.TopSourceBoxes.prototype.onClickHandle = function() {
-
   };
 
   app.TopSourceBoxes.prototype._setup = function() {
-
     var margin = {
       top: 10,
       right: 10,
@@ -49,13 +47,9 @@
 
     var rectWidth = (width / topSourcesLength) - 30;
 
-
-
-
     var onBoxClickFunc = function(data) {
       var isItemUnclicked = false;
       var getOnClickFunc = function(className) {
-
         return function(d) {
           var isClicked = d3.select(this).classed(className);
           var isSameData = (d === data);
@@ -97,7 +91,6 @@
       .attr('height', height)
       .attr('width', rectWidth);
 
-
     var sourceLimit = 15;
 
     rectGroup.append('text')
@@ -134,7 +127,6 @@
   };
 
   app.TopSourceBoxes.prototype._createSentimentBar = function(sentiments, parent, width, height) {
-
     var noOfRectangles = 10;
     var data = app.widgetUtil.generateSectionedColorData(
       app.widgetUtil.createSentimentEntriesObj(sentiments),
@@ -161,7 +153,5 @@
       .attr('fill', app.widgetUtil.fillSection);
 
     app.widgetUtil.addGradients(parent, data.gradients);
-
   };
-
 })(window.app || (window.app = {}));

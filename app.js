@@ -16,22 +16,21 @@
 
 'use strict';
 
-var express = require('express'),
-  app       = express(),
-  urlParse  = require('url'),
-  extend    = require('util')._extend,
-  watson    = require('watson-developer-cloud'),
-  Q         = require('q');
+var express = require('express');
+var app       = express();
+var urlParse  = require('url');
+var extend    = require('util')._extend;
+var watson    = require('watson-developer-cloud');
+var Q         = require('q');
 
 // Bootstrap application settings
 require('./config/express')(app);
 
 var toneAnalyzer = watson.tone_analyzer({
-  isStreaming: false,
   username: '<username>',
   password: '<password>',
-  version: 'v3-beta',
-  version_date: '2016-02-11'
+  version: 'v3',
+  version_date: '2016-05-19'
 });
 
 var alchemyApiKey = { api_key: process.env.ALCHEMY_API_KEY || '<your api key>'};
@@ -51,50 +50,49 @@ function keywordSentiment(keyword, sentiment) {
     (sentiment ? ',sentiment.type=' + sentiment : '') +
     ',relevance=>0.7\|';
 }
-app.get('/api/sentiment', function (req, res, next) {
+app.get('/api/sentiment', function(req, res, next) {
   var params = {
     start: req.query.start,
     end: req.query.end,
     slice: req.query.slice,
     'q.enriched.url.docSentiment.type': req.query.sentiment,
-    'q.enriched.url.enrichedTitle.entities.entity' : entityQuery(req.query.entity),
+    'q.enriched.url.enrichedTitle.entities.entity': entityQuery(req.query.entity)
   };
 
   getNews(params).then(function(news) {
     return res.json(news.result);
   })
-  .catch(function(error){
+  .catch(function(error) {
     // if we get a 404 from AlchemyDataNews
     if (error && error.code === 404) {
       error.error = 'Article not found';
     }
     next(error);
   });
+});
 
- });
-
-app.get('/api/keywords', function (req, res, next) {
+app.get('/api/keywords', function(req, res, next) {
   var params = {
     start: req.query.start,
     end: req.query.end,
-    'q.enriched.url.enrichedTitle.entities.entity' : entityQuery(req.query.entity)
+    'q.enriched.url.enrichedTitle.entities.entity': entityQuery(req.query.entity)
   };
 
   if (req.query.count) {
     var countParams = extend(params, {
       count: 300,
-      'q.enriched.url.keywords.keyword.text' : req.query.keyword,
+      'q.enriched.url.keywords.keyword.text': req.query.keyword,
       return: 'q.enriched.url.keywords.keyword.text,q.enriched.url.keywords.keyword.sentiment.score,enriched.url.keywords.keyword.relevance'
     });
 
-    getNews(countParams).then(function(news){
+    getNews(countParams).then(function(news) {
       var docs = news.result.docs || [];
       var keywordsMap = {};
 
-      docs.forEach(function(doc){
-        if (doc.source.enriched != undefined){
+      docs.forEach(function(doc) {
+        if (typeof (doc.source.enriched) !== 'undefined') {
           var keywords = doc.source.enriched.url.keywords || [];
-          keywords.forEach(function(keyword){
+          keywords.forEach(function(keyword) {
             var key = keyword.text.toUpperCase();
             if (keyword.relevance > 0.7) {
               if (keywordsMap[key]) {
@@ -109,9 +107,6 @@ app.get('/api/keywords', function (req, res, next) {
               }
             }
           });
-        }
-        else {
-          console.log(JSON.stringify(doc, null, 2));
         }
       });
 
@@ -129,11 +124,11 @@ app.get('/api/keywords', function (req, res, next) {
     .catch(next);
   } else if (req.query.keyword) {
     var keywordParams = extend(params, {
-      'q.enriched.url.keywords.keyword' : keywordSentiment(req.query.keyword, req.query.sentiment),
+      'q.enriched.url.keywords.keyword': keywordSentiment(req.query.keyword, req.query.sentiment),
       timeslice: req.query.slice
     });
 
-    getNews(keywordParams).then(function(news){
+    getNews(keywordParams).then(function(news) {
       return res.json(news.result);
     })
     .catch(next);
@@ -142,17 +137,17 @@ app.get('/api/keywords', function (req, res, next) {
   }
 });
 
-app.get('/api/sources', function (req, res, next) {
+app.get('/api/sources', function(req, res, next) {
   var params = {
     start: req.query.start,
     end: req.query.end,
-    'q.enriched.url.enrichedTitle.entities.entity' : entityQuery(req.query.entity)
+    'q.enriched.url.enrichedTitle.entities.entity': entityQuery(req.query.entity)
   };
 
   if (req.query.count) {
     var keywordParams = extend(params, {
       count: 1000,
-      'q.enriched.url.keywords.keyword.text' : req.query.keyword,
+      'q.enriched.url.keywords.keyword.text': req.query.keyword,
       return: 'q.enriched.url.url'
     });
 
@@ -160,14 +155,15 @@ app.get('/api/sources', function (req, res, next) {
       var docs = news.result.docs || [];
       var sourceMap = {};
 
-      docs.map(function(doc){
+      docs.map(function(doc) {
         var url = doc.source.enriched.url.url;
         if (url) {
           var host = urlParse.parse(url).hostname;
-          if (sourceMap[host])
+          if (sourceMap[host]) {
             sourceMap[host].count += 1;
-          else
+          } else {
             sourceMap[host] = { source: host, count: 1};
+          }
         }
       });
 
@@ -200,7 +196,7 @@ app.get('/api/sources', function (req, res, next) {
 });
 
 
-app.get('/api/articles', function (req, res, next) {
+app.get('/api/articles', function(req, res, next) {
   var params = {
     count: req.query.count || 1000,
     start: req.query.start,
@@ -210,7 +206,7 @@ app.get('/api/articles', function (req, res, next) {
     'q.enriched.url.url': req.query.source
   };
 
-  getNews(params).then(function(news){
+  getNews(params).then(function(news) {
     var docs = news.result.docs || [];
     var sortedDocs = docs.map(function(doc) {
       doc.title = doc.source.enriched.url.title;
@@ -226,24 +222,26 @@ app.get('/api/articles', function (req, res, next) {
   .catch(next);
 });
 
-app.get('/api/tone', function (req, res, next) {
-   extractText({url : req.query.url}) // get the text from a url
-   .then(function(result){
-     return getTone({text: result.text}).then(function(tone){
-       res.json(tone[0]);
-     });
-   })
-   .catch(function(error){
-     // If there is any error in fetching the article, return an empty
-     // tone object to avoid errors in the UI.
-     var emptyTone = {};
-     res.json(emptyTone);
-   });
- });
+app.get('/api/tone', function(req, res) {
+  extractText({ url: req.query.url }) // get the text from a url
+  .then(function(result) {
+    return getTone({text: result.text}).then(function(tone) {
+      res.json(tone[0]);
+    });
+  })
+  .catch(function() {
+    // If there is any error in fetching the article, return an empty
+    // tone object to avoid errors in the UI.
+    var emptyTone = {};
+    res.json(emptyTone);
+  });
+});
+
+app.get('/', function(req, res) {
+  res.render('index');
+});
 
 // error-handler settings
 require('./config/error-handler')(app);
 
-var port = process.env.VCAP_APP_PORT || 6001;
-app.listen(port);
-console.log('listening at:', port);
+module.exports = app;

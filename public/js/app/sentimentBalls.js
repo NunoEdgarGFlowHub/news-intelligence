@@ -1,10 +1,10 @@
+/* eslint one-var: "off" */
+
 (function(app) {
   'use strict';
   app.SentimentBalls = function(dom, args) {
     this.domNode = dom;
-
     this.sentiments = args.sentiments;
-
     this._setup();
   };
 
@@ -13,10 +13,8 @@
     this.domNode.remove();
   };
 
-
   app.SentimentBalls.prototype._setup = function() {
-
-    //variables for chart geomtetry specifications
+    // variables for chart geomtetry specifications
     var svgWidth = 500,
       svgHeight = 100,
       margin = {
@@ -26,23 +24,19 @@
         bottom: 0
       },
       width = svgWidth - margin.right - margin.left,
-      //height = svgHeight - margin.top - margin.bottom,
+      // height = svgHeight - margin.top - margin.bottom,
       noOfBalls = 10;
 
-
-    //variables for data
+    // variables for data
     var positive = this.sentiments.positive.count,
       negative = this.sentiments.negative.count,
       neutral = this.sentiments.neutral.count,
       total = positive + negative + neutral;
 
-
     var colorData = app.widgetUtil.generateSectionedColorData(
       app.widgetUtil.createSentimentEntriesObj(this.sentiments),
       noOfBalls, app.widgetUtil.SENTIMENT_COLOR_MAP);
     var ballsArr = colorData.colors;
-
-
 
     this._svg =
       d3.select(this.domNode)
@@ -62,8 +56,6 @@
     var spacePerCircle = Math.floor(spacePerCircleBox / 2);
     var circleRadius = Math.floor(spacePerCircle / 2);
 
-
-
     this._svg.selectAll('circle')
       .data(ballsArr)
       .enter().append('circle')
@@ -76,7 +68,7 @@
       .attr('cy', circleRadius)
       .attr('r', circleRadius);
 
-    //Plus and negative symbols
+    // Plus and negative symbols
     var plusG = this._svg.append('g')
       .attr('transform', 'translate(' +
         (width - (circleRadius * 3)) + ',' + (spacePerCircleBox) + ')')
@@ -114,7 +106,6 @@
     var negPercent = Math.round((negative / total) * 100),
       posPercent = Math.round((positive / total) * 100);
 
-
     this._svg.append('text')
       .classed('sentiment-percent', true)
       .attr('x', symbolSpace)
@@ -124,9 +115,7 @@
         return negPercent + '%';
       });
 
-    //plus and negative text
-
-
+    // plus and negative text
     var rightExtraSpace;
     if (posPercent === 100) {
       rightExtraSpace = 35;
@@ -144,8 +133,5 @@
       .text(function() {
         return posPercent + '%';
       });
-
-
   };
-
 })(window.app || (window.app = {}));

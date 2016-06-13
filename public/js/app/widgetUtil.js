@@ -23,21 +23,23 @@
 
   app.widgetUtil.getTickFormatCallback = function(updateDate) {
     return function(date) {
-      if (!(date instanceof Date)) {
-        date = new Date(app.widgetUtil.convertDayToDate(date, updateDate));
+      var internalDate = date;
+      if (!(internalDate instanceof Date)) {
+        internalDate = new Date(app.widgetUtil.convertDayToDate(internalDate, updateDate));
       }
       var xAxisStr = app.widgetUtil.TODAYS_DATE_LABEL;
-      if (date.getTime() !== updateDate) {
-        xAxisStr = (date.getMonth() + 1) + '/' + date.getDate();
+      if (internalDate.getTime() !== updateDate) {
+        xAxisStr = (internalDate.getMonth() + 1) + '/' + internalDate.getDate();
       }
       return xAxisStr;
     };
   };
 
   app.widgetUtil._processSectionSpace =
-  function(normalizedData, currentDataArr, remainingSectionSpace) {
-    var entrySpace = 0,
-      entry = normalizedData[0];
+  function(normalizedData, currentDataArr, rss) {
+    var entrySpace = 0;
+    var entry = normalizedData[0];
+    var remainingSectionSpace = rss;
     if (entry.value > remainingSectionSpace) {
       entry.value -= remainingSectionSpace;
       entrySpace = remainingSectionSpace;
@@ -103,7 +105,7 @@
 
   app.widgetUtil.generateSectionedColorData =
   function(slices, noOfSections, colorMap, gradientPrefix) {
-    //Normalize the data into sectioned parts of 100
+    // Normalize the data into sectioned parts of 100
     var total = slices.reduce(function(previousValue, slice) {
       return previousValue + slice.value;
     }, 0);
@@ -114,14 +116,13 @@
         noOfSections
       };
     });
-    var colorData = [], gradientData = [];
+    var colorData = [];
+    var gradientData = [];
     for (var count = 0; count < noOfSections; count++) {
       this._fillupSectionedColorData(
         normalizedData, colorData, gradientData, colorMap, gradientPrefix);
     }
-
     return {colors: colorData, gradients: gradientData};
-
   };
 
   app.widgetUtil.addGradients = function(parent, gradients) {
@@ -148,22 +149,19 @@
       });
   };
 
-  app.widgetUtil.createSentimentEntriesObj = function(sentiments){
-    //order in sentiment key array controls the order we show the sentiment
+  app.widgetUtil.createSentimentEntriesObj = function(sentiments) {
+    // order in sentiment key array controls the order we show the sentiment
     var sentimentsKeys = ['negative', 'neutral', 'positive'];
-    return sentimentsKeys.map(function(sentimentKey){
+    return sentimentsKeys.map(function(sentimentKey) {
       return {
         id: sentimentKey,
         value: sentiments[sentimentKey].count
       };
     });
-
   };
 
   app.widgetUtil.fillSection = function(d) {
     return d.color ? d.color :
       'url(#' + d.gradientId + ')';
-
   };
-
 })(window.app || (window.app = {}));

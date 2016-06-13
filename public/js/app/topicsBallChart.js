@@ -1,13 +1,13 @@
+/* eslint one-var: "off" */
+/* global browserInfo:true */
 (function(app) {
   'use strict';
   app.TopicsBallChart = function(dom, args) {
-
     this.domNode = dom;
-
     this.keywords = args.keywords;
-
     this._setup();
   };
+
   app.TopicsBallChart.prototype._setup = function() {
     var margin = {
         top: 10,
@@ -37,10 +37,7 @@
       .attr('viewBox', '0 0 ' + chartWidth + ' ' + chartHeight)
       .attr('width', '100%')
       .attr('height', function() {
-        if (browserInfo.search('ie') !== -1)
-          return '300';
-        else
-          return '100%';
+        return browserInfo.search('ie') !== -1 ? '300' : '100%';
       })
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
@@ -105,17 +102,16 @@
       .data(this.keywords)
       .enter().append('g')
       .classed('circle-node', true)
-      .attr('transform', function(d, i){
+      .attr('transform', function(d, i) {
         return 'translate(' + circleXFunc(d, i) + ',' + horizontalLineY + ')';
       })
-      .on('click', function(d){
+      .on('click', function(d) {
         this.onClickHandle(d);
       }.bind(this));
 
     nodeGroup.append('circle')
       .classed('circle-counter', true)
       .attr('r', circleRadius);
-
 
     nodeGroup.append('text')
       .classed('ball-number', true)
@@ -131,9 +127,6 @@
       }.bind(this))
       .attr('y', 3)
       .text(this._formatNumber);
-
-
-
 
     this._svg.selectAll('.stick-text')
       .data(this.keywords)
@@ -159,14 +152,10 @@
         }
         return objText;
       });
-
-
   };
 
-  app.TopicsBallChart.prototype.onClickHandle = function(/*data*/) {
-
+  app.TopicsBallChart.prototype.onClickHandle = function(/* data*/) {
   };
-
 
   app.TopicsBallChart.prototype._formatNumber = function(data) {
     var num = data.count,
@@ -192,6 +181,4 @@
     this._svg.remove();
     this.domNode.remove();
   };
-
-
 })(window.app || (window.app = {}));

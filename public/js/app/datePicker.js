@@ -2,30 +2,22 @@
   'use strict';
   app.DatePicker = function(dom) {
     this.domNode = dom;
-
-
     this._setup();
   };
 
   app.DatePicker.MIN_TIME = -60;
   app.DatePicker.MAX_TIME = 0;
 
-  app.DatePicker.prototype.onDateChange = function(/*startDay, endDay*/) {
-
+  app.DatePicker.prototype.onDateChange = function(/* startDay, endDay*/) {
   };
 
   app.DatePicker.prototype.setDays = function(startDay, endDay) {
     this._brush.extent([startDay, endDay]);
-
-
     this._brush(d3.select('.date-picker .brush'));
-
-
     this._brush.event(d3.select('.date-picker .brush'));
   };
 
   app.DatePicker.prototype._setup = function() {
-
     var originalWidth = 960;
     var originalHeight = 80;
 
@@ -36,13 +28,11 @@
       left: 10
     };
     var width = originalWidth - margin.left - margin.right;
-    //var height = originalHeight - margin.top - margin.bottom;
+    // var height = originalHeight - margin.top - margin.bottom;
 
     var topSpace = 10;
     var sliderHeight = 4;
-
     var axisPos = topSpace + sliderHeight + 25;
-
     var x = d3.scale.linear()
       .range([0, width])
       .domain([app.DatePicker.MIN_TIME, app.DatePicker.MAX_TIME]);
@@ -56,10 +46,10 @@
         originalExtent.forEach(function(extent) {
           newExtent.push(Math.round(extent));
         });
-        if(newExtent[0] === newExtent[1]){
-          if(newExtent[0] === app.DatePicker.MIN_TIME){
+        if (newExtent[0] === newExtent[1]) {
+          if (newExtent[0] === app.DatePicker.MIN_TIME) {
             newExtent[1] += 1;
-          }else{
+          } else {
             newExtent[0] -= 1;
           }
         }
@@ -73,7 +63,6 @@
     var brush = this._brush = d3.svg.brush()
       .x(x)
       .on('brushend', brushEndedFunc);
-
 
     var svg = d3.select(this.domNode).append('svg')
       .attr('class', 'date-picker')
@@ -97,12 +86,9 @@
       .style('text-anchor', 'start')
       .text(tickLabelCallback);
 
-
-
     var gBrush = svg.append('g')
       .attr('class', 'brush')
       .call(brush);
-
 
     gBrush.selectAll('rect').
     attr('y', topSpace)
@@ -118,8 +104,5 @@
     gBrush.select('.e').append('path')
       .attr('transform', 'translate(0,' + triangleUpY + ')')
       .attr('d', triangleUp).classed('arrow-handle', true);
-
-
   };
-
 })(window.app || (window.app = {}));

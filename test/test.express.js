@@ -16,30 +16,11 @@
 
 'use strict';
 
-// security.js
-var secure  = require('express-secure-only');
-var rateLimit = require('express-rate-limit');
-var helmet    = require('helmet');
+var app = require('../app');
+var request = require('supertest');
 
-module.exports = function(app) {
-  app.enable('trust proxy');
-
-  // 1. redirects http to https
-  app.use(secure());
-
-  // 2. helmet with defaults
-  app.use(helmet());
-
-  // 3. rate limiting
-  var limiter = rateLimit({
-    windowMs: 30 * 1000, // seconds
-    delayMs: 0,
-    max: 1000,
-    message: JSON.stringify({
-      error: 'Too many requests, please try again in 30 seconds.',
-      code: 429
-    })
+describe('express', function() {
+  it('load home page when GET /', function(done) {
+    request(app).get('/').expect(200, done);
   });
-
-  app.use('/api/', limiter);
-};
+});

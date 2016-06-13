@@ -1,10 +1,10 @@
+/* global browserInfo:true */
+
 (function(app) {
   'use strict';
   app.TopicsTable = function(dom, args) {
     this.domNode = dom;
-
     this.model = args.model;
-
     this._setup();
     this.loadData(this.model.data.keywords);
   };
@@ -31,9 +31,9 @@
         return d === data;
       });
     var selectionRows = tbody.select('.keyword-row');
-    //there should only be one item but lets make sure
-    var isItemSelected = false,
-      romDomNode = null;
+    // there should only be one item but lets make sure
+    var isItemSelected = false;
+    var romDomNode = null;
     selectionRows.each(function() {
       if (!isItemSelected) {
         var row = d3.select(this);
@@ -64,11 +64,10 @@
   };
 
   app.TopicsTable.prototype.loadData = function(data) {
-
     var indexOfSentiment = 2;
     var model = this.model;
-    //TODO: do not modify the model obj. Instead have a temporary metadata obj which
-    //stores divs
+    // TODO: do not modify the model obj. Instead have a temporary metadata obj which
+    // stores divs
     var rowGroupSelection = this._table.selectAll('tbody')
       .data(data).enter()
       .append('tbody');
@@ -82,19 +81,19 @@
 
           d._graphDiv.appendChild(dummyDiv);
           d._graphDiv.style.display = 'flex';
-          if (browserInfo.search('ie') !== -1)
+          if (browserInfo.search('ie') !== -1) {
             d._graphDiv.style.display = '-ms-flexbox';
-
+          }
           carrotDiv.classed('carrot-expanded', true);
 
           var sentimentPromise = model.fetchKeywordSentiments(d);
-          var row = this;
+          var self = this;
           sentimentPromise.then(function() {
-            //incase row is closed before the response comes back
+            // incase row is closed before the response comes back
             if (d._dummyDiv) {
               dummyDiv.innerHTML = '';
               dummyDiv.className = 'sentiment-chart-container';
-              row._sentimentLineChart = new app.SentimentLineChart(dummyDiv, {
+              self._sentimentLineChart = new app.SentimentLineChart(dummyDiv, {
                 model: model,
                 sentiments: d.sentiments
               });
@@ -112,7 +111,7 @@
 
     rowGroupSelection.append('tr')
       .append('td')
-      //include the carrot's columns
+      // include the carrot's columns
       .attr('colspan', app.TopicsTable.TABLE_COLUMNS.length + 1)
       .append('div')
       .each(function(d) {
@@ -130,13 +129,11 @@
     var td = row.selectAll('.data-column-entry')
       .data(function(entry) {
         return app.TopicsTable.TABLE_COLUMNS.map(function(col) {
-
           return entry[col.prop];
         });
       }).enter()
       .append('td')
       .classed('data-column-entry', true);
-
 
     td.html(function(d, i) {
       var content = d;

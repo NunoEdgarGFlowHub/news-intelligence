@@ -1,3 +1,5 @@
+/* global d3:true */
+
 (function(app) {
   'use strict';
   app.ArticleTable = function(dom, args) {
@@ -27,7 +29,6 @@
   };
 
   app.ArticleTable.prototype._setup = function() {
-
     this.createTable(this.source.articles, 'Articles sorted from positive to negative');
   };
 
@@ -45,49 +46,49 @@
         var td = specificRow.append('td')
           .classed('article-cell', true);
         switch (column.prop) {
-          case 'title':
-            td.append('a')
+        case 'title':
+          td.append('a')
               .attr('target', '_blank')
               .attr('href', rowData.url)
               .html(rowData.title);
-            break;
-          case 'date':
-            try {
-              var date = new Date(rowData.timestamp * 1000);
-              td.html(date.toDateString());
-            } catch (e) {
-              console.error(e);
-            }
-            break;
-          case 'tone':
-            var tones = [];
-            if(rowData.tone &&
+          break;
+        case 'date':
+          try {
+            var date = new Date(rowData.timestamp * 1000);
+            td.html(date.toDateString());
+          } catch (e) {
+            console.error(e);
+          }
+          break;
+        case 'tone':
+          var tones = [];
+          if (rowData.tone &&
               rowData.tone.document_tone &&
               rowData.tone.document_tone.tone_categories instanceof Array
-              ){
-              rowData.tone.document_tone.tone_categories.forEach(function(toneCategory) {
-                if (toneCategory.category_id === 'emotion_tone') {
-                  toneCategory.tones.forEach(function(tone) {
-                    if (tone.score !== 0) {
-                      tones.push(tone);
-                    }
-                  });
-                }
-              });
-            }
-            tones.sort(function(elem1, elem2) {
-              return elem2.score - elem1.score;
+              ) {
+            rowData.tone.document_tone.tone_categories.forEach(function(toneCategory) {
+              if (toneCategory.category_id === 'emotion_tone') {
+                toneCategory.tones.forEach(function(tone) {
+                  if (tone.score !== 0) {
+                    tones.push(tone);
+                  }
+                });
+              }
             });
-            var toneText = '';
-            var sep = '';
-            tones.forEach(function(tone) {
-              toneText += sep;
-              toneText += tone.tone_name + ' (' + (tone.score * 100).toFixed(2) + '%)';
-              sep = ', ';
-            });
-            td.html(toneText);
-            break;
-          default:
+          }
+          tones.sort(function(elem1, elem2) {
+            return elem2.score - elem1.score;
+          });
+          var toneText = '';
+          var sep = '';
+          tones.forEach(function(tone) {
+            toneText += sep;
+            toneText += tone.tone_name + ' (' + (tone.score * 100).toFixed(2) + '%)';
+            sep = ', ';
+          });
+          td.html(toneText);
+          break;
+        default:
         }
       });
     });
@@ -137,7 +138,5 @@
       }
       this._addRows(table, negativeArticles);
     }
-
   };
-
 })(window.app || (window.app = {}));
