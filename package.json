@@ -1,10 +1,10 @@
 {
-  "name": "business-intelligence",
-  "version": "0.5.0",
+  "name": "news-intelligence",
+  "version": "0.8.0",
   "description": "A sample Node.js web application that highlights the use of Alchemy APIs and Tone Analyzer",
   "repository": {
     "type": "git",
-    "url": "https://github.com/watson-developer-cloud/business-intelligence-application-starter-kit.git"
+    "url": "https://github.com/watson-developer-cloud/news-intelligence.git"
   },
   "engines": {
     "node": ">=4.0"
@@ -19,7 +19,7 @@
   }],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/watson-developer-cloud/business-intelligence-application-starter-kit/issues"
+    "url": "https://github.com/watson-developer-cloud/news-intelligence/issues"
   },
   "scripts": {
     "start": "node server.js",
@@ -31,8 +31,6 @@
   "dependencies": {
     "body-parser": "^1.13.2",
     "cf-deployment-tracker-client": "0.1.1",
-    "cookie-parser": "^1.4.1",
-    "csurf": "^1.8.3",
     "dotenv": "^2.0.0",
     "ejs": "^2.3.4",
     "express": "^4.12.2",
@@ -44,14 +42,10 @@
     "watson-developer-cloud": "^1.9.0"
   },
   "devDependencies": {
-    "babel-eslint": "^6.0.4",
     "codecov": "^1.0.1",
     "eslint": "^2.8.0",
-    "eslint-config-airbnb-es5": "^1.0.9",
-    "eslint-plugin-react": "^5.1.1",
     "istanbul": "^0.4.2",
     "mocha": "^2.4.5",
-    "nock": "7.7.0",
     "supertest": "^1.2.0"
   }
 }

@@ -1,13 +1,13 @@
-# Business Intelligence [![Build Status](https://travis-ci.org/watson-developer-cloud/business-intelligence-application-starter-kit.svg?branch=master)](https://travis-ci.org/watson-developer-cloud/business-intelligence-application-starter-kit)
+# News Intelligence [![Build Status](https://travis-ci.org/watson-developer-cloud/news-intelligence.svg?branch=master)](https://travis-ci.org/watson-developer-cloud/news-intelligence)
 
-This application is an **Application Starter Kit** (ASK) that is designed to get you up and running quickly with a common industry pattern, and to provide information about best practices around Watson services. The **Business Intelligence** application was created to highlight the combination of the [AlchemyData News][alchemydata-news], [Alchemy Language][alchemy-language], and [Tone Analyzer][tone-analyzer] services as a [Business Intelligence](#about-the-business-intelligence-pattern) tool. This application can serve as the basis for your own applications that follow that pattern.
+This application is an **Starter Kit** (SK) that is designed to get you up and running quickly with a common industry pattern, and to provide information about best practices around Watson services. The **News Intelligence** application was created to highlight the combination of the [AlchemyData News][alchemydata-news], [Alchemy Language][alchemy-language], and [Tone Analyzer][tone-analyzer] services as a [News Intelligence](#about-the-news-intelligence-pattern) tool. This application can serve as the basis for your own applications that follow that pattern.
 
 Give it a try! Click the button below to fork the repository that contains the source code for this application into IBM DevOps Services, which then deploys your own copy of this application on Bluemix automatically:
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/watson-developer-cloud/business-intelligence-application-starter-kit)
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/watson-developer-cloud/news-intelligence)
 
 You can see a version of this app that is already running by clicking
-[here](http://business-intelligence-application-starter-kit.mybluemix.net/).
+[here](http://news-intelligence.mybluemix.net/).
 
 **IMPORTANT:**
 This application requires an AlchemyAPI key with high transaction limits. The free AlchemyAPI key that you request has a limit of 1000 transactions per day, which is insufficient for significant use of this sample application. See [step 3](#step3) of the [Getting Started](#getting-started) section for information about requesting a higher transaction limit on your sample AlchemyAPI key.
@@ -16,7 +16,7 @@ This application requires an AlchemyAPI key with high transaction limits. The fr
   - [How this app works](#how-this-app-works)
   - [Getting Started](#getting-started)
   - [Running the application locally](#running-the-application-locally)
-  - [About the Business Intelligence pattern](#about-the-business-intelligence-pattern)
+  - [About the News Intelligence pattern](#about-the-news-intelligence-pattern)
     - [When to use this pattern](#when-to-use-this-pattern)
     - [Best practices](#best-practices)
   - [Reference information](#reference-information)
@@ -42,34 +42,30 @@ The following instructions explain how to fork the project on GitHub and push th
 
   2. Create a Bluemix account. [Sign up][sign_up] in Bluemix or use an existing account. Watson services in beta are free to use, as are GA services in the standard plan below a certain usage threshold.
 
-  <a name="step3"></a>
   3.  Get an [Alchemy API key][get-alchemyapi-key]. Contact IBM to  request a higher transaction limit than the default for free keys, which is 1000 transactions per day.
 
   4. If it is not already installed on your system, download and install the [Cloud-foundry CLI][cloud_foundry] tool.
 
   5. If it is not already installed on your system, install [Node.js](http://nodejs.org/). Installing Node.js will also install the `npm` command.
 
-  6. Open app.js file, and specify the API key here:
+  6. Create an `.env` file, and specify the Alchemy API key:
 
-     `var alchemyApiKey = { api_key: process.env.ALCHEMY_API_KEY || '<your api key>'};`
+     `ALCHEMY_API_KEY=<your api key>`
 
-  7. Edit the `manifest.yml` file in the folder that contains your fork and replace `business-intelligence` with a unique name for your copy of the application. The name that you specify determines the application's URL, such as `application-name.mybluemix.net`.
+  7. Edit the `manifest.yml` file in the folder that contains your fork and replace `news-intelligence` with a unique name for your copy of the application. The name that you specify determines the application's URL, such as `application-name.mybluemix.net`.
 
     ```yml
 declared-services:
   tone-analyzer-service:
     label: tone_analyzer
-    plan: beta
+    plan: standard
 applications:
-- name: business-intelligence
+- name: news-intelligence
   command: npm start
   path: .
   memory: 512M
   services:
   - tone-analyzer-service
-  env:
-    NODE_ENV: production
-    SECURE_EXPRESS: 1
     ```
   6. Connect to Bluemix by running the following commands in a terminal window:
 
@@ -81,9 +77,8 @@ applications:
   7. Create an instance of the Tone Analyzer service in Bluemix by running the following command:
 
     ```sh
-    $ cf create-service tone_analyzer beta tone-analyzer-service
+    $ cf create-service tone_analyzer standard tone-analyzer-service
     ```
-    **Note:** The Tone Analyzer service is currently a beta service.
 
   11. Push the updated application live by running the following command:
 
@@ -117,41 +112,29 @@ Follow the steps in the [previous section](#getting-started) and ensure that you
         },
         "label": "tone_analyzer",
         "name": "tone-analyzer-service",
-        "plan": "beta"
+        "plan": "standard"
      }]
     }
     }
     ```
 
-  3. Create a `.env.js` file in the root directory of the project with the following content, filling in the credentials with the information from the previous step:
+  3. Create a `.env` file in the root directory of the project with the following content, filling in the credentials with the information from the previous step:
 
-      ```js
-      'use strict';
-
-      module.exports = {
-        VCAP_SERVICES: JSON.stringify({
-          tone_analyzer: [{
-            credentials: {
-              url: 'https://gateway.watsonplatform.net/tone-analyzer-beta/api',
-              username: 'TONE ANALYZER USERNAME HERE',
-              password: 'TONE ANALYZER PASSWORD HERE'
-            }
-          }],
-
-        VCAP_APP_PORT: 3000
-      })};
+      ```none
+ALCHEMY_API_KEY=YOUR-ALCHEMY-KEY
+VCAP_SERVICES={"tone_analyzer":[{"credentials":{ "password":"YOUR-PASSWORD", "username":"YOUR-USERNAME", "url":"https://gateway.watsonplatform.net/tone-analyzer/api"}}]}
       ```
 
 
   4. Start the application by running:
 
     ```sh
-    $ node app.js
+    $ npm start
     ```
 
-  5. Open [http://localhost:6001](http://localhost:6001) to see the running application.
+  5. Open [http://localhost:3000](http://localhost:3000) to see the running application.
 
-## About the Business Intelligence pattern
+## About the News Intelligence pattern
 
 This sample application demonstrates how to use natural language processing to understand popular sentiment about a topic using the AlchemyData News, AlchemyLanguage, and Tone Analyzer APIs.
 
@@ -159,7 +142,7 @@ The sample application is made up of two major components:
 * Node.js server - This application acts as a proxy between the web-based dashboard and the Alchemy services
 * Web-based dashboard client - This dashboard helps you understand how the public feels about a company.
 
-<img src="doc/pattern.png" style="width:50%;">
+<div style="text-align:center;"><img src="doc/pattern.png" style="width:50%;"></div>
 
 The Node JS application exposes the following endpoints for the dashboard:
 * /api/sentiments - this endpoint is used to determine the overall sentiment for a company

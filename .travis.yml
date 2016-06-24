@@ -12,7 +12,7 @@ deploy:
   organization: WatsonPlatformServices
   space: appgallery
   on:
-    repo: watson-developer-cloud/business-intelligence-application-starter-kit
+    repo: watson-developer-cloud/news-intelligence
     branch: master
   skip_cleanup: true
 notifications:

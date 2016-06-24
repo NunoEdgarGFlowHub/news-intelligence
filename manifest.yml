@@ -3,7 +3,7 @@ declared-services:
     label: tone_analyzer
     plan: standard
 applications:
-- name: business-intelligence-application-starter-kit
+- name: news-intelligence
   command: npm start
   path: .
   memory: 512M

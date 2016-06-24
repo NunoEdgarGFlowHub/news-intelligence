@@ -12,8 +12,6 @@
   },
   "env": {
     "node": true,
-    "jquery": true,
-    "browser": true
   },
-  "extends": "eslint-config-airbnb-es5",
+  "extends": "eslint:recommended",
 }
