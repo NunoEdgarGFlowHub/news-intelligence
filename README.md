@@ -1,4 +1,4 @@
-# News Intelligence [![Build Status](https://travis-ci.org/watson-developer-cloud/business-intelligence-application-starter-kit.svg?branch=master)](https://travis-ci.org/watson-developer-cloud/business-intelligence-application-starter-kit)
+# News Intelligence [![Build Status](https://travis-ci.org/watson-developer-cloud/news-intelligence.svg?branch=master)](https://travis-ci.org/watson-developer-cloud/business-intelligence-application-starter-kit)
 
 This application is an **Starter Kit** (SK) that is designed to get you up and running quickly with a common industry pattern, and to provide information about best practices around Watson services. The **News Intelligence** application was created to highlight the combination of the [AlchemyData News][alchemydata-news], [Alchemy Language][alchemy-language], and [Tone Analyzer][tone-analyzer] services as a [News Intelligence](#about-the-news-intelligence-pattern) tool. This application can serve as the basis for your own applications that follow that pattern.
 
