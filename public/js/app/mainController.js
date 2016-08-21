@@ -1,3 +1,5 @@
+/* global alertify */
+
 (function(app) {
   'use strict';
   app.MainController = function(model) {
@@ -104,14 +106,13 @@
               console.error(e);
             }
           } else {
-            window.alert('No data available for entity ' + this.model.entity);
+            alertify.alert('No data available for entity ' + this.model.entity);
           }
         }.bind(this))
           .catch(
-            function(reason) {
+            function() {
               this._showLoader(false);
-              window.alert('Unable to retrieve answers from Watson. \n\n Status: ' +
-                reason.status + ', Message: ' + reason.responseText);
+              alertify.alert('Unable to retrieve answers from Watson.');
             }.bind(this)
           );
       } else {
@@ -145,7 +146,7 @@
         if (inputValue.trim().length) {
           callback(inputValue);
         } else {
-          window.alert('Please enter an entity name.');
+          alertify.alert('Please enter an entity name.');
         }
         return true;
       }
@@ -263,7 +264,7 @@
                 source: source
               });
           }.bind(this)).catch(function(error) {
-            window.alert('An error occurred while fetching articles');
+            alertify.alert('An error occurred while fetching articles.');
             console.error(error);
           });
         }
